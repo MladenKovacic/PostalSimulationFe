@@ -1,21 +1,19 @@
+"use client";
+import { useState } from "react";
+import Sidebar from "./components/Sidebar";
+import PostalOfficeView from "./components/PostalOfficeView";
+import PackageListView from "./components/PackageListView";
 
-import Image from "next/image";
-// import { useEffect, useState } from 'react';
+export default function Home() {
+    const [activeView, setActiveView] = useState("offices");
 
-export async function getServerSideProps() {
-    const res = await fetch('http://localhost:5000/getall/package/list/12640');
-    const data = await res.json();
-
-    return {
-        props: { data }, // Will be passed to the page component as props
-    };
+    return (
+        <div style={{ display: "flex" }}>
+            <Sidebar setActiveView={setActiveView} />
+            <div style={{ flex: 1, padding: "20px", backgroundColor: "#e6f0ff", minHeight: "100vh" }}>
+                {activeView === "offices" && <PostalOfficeView />}
+                {activeView === "packages" && <PackageListView />}
+            </div>
+        </div>
+    );
 }
-
-// export default function ServerSideRendering({ data }) {
-//     return (
-//         <div>
-//             <h1>Data from API</h1>
-//             <pre>{JSON.stringify(data, null, 2)}</pre>
-//         </div>
-//     );
-// }
