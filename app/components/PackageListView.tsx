@@ -1,14 +1,27 @@
 ﻿"use client";
 import { useState } from "react";
-import styles from "./Sidebar.module.css";
+
+
+interface Package {
+    senderName: string;
+    senderZipCode: string;
+    recipientName: string;
+    recipientZipCode: string;
+}
+
+interface PackageResponse {
+    outgoing: Package[];
+    incoming: Package[];
+}
 
 export default function PackageListView() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [zip, setZip] = useState("");
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<PackageResponse| null>(null);
 
     const fetchPackages = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/getall/package/list/${zip}`);
+            const res = await fetch(`${apiUrl}/getall/package/list/${zip}`);
             if (!res.ok) throw new Error("Failed to fetch");
             const result = await res.json();
             setData(result);
@@ -20,50 +33,33 @@ export default function PackageListView() {
 
     return (
         <div>
-            <h2 style={{
-                color: "#000",
-            }}>Package List</h2>
+            <h2 className="text-black"
+            >Package List</h2>
             <input 
                 placeholder="Enter Zipcode"
                 value={zip}
                 onChange={(e) => setZip(e.target.value)}
-                style={{ padding: "8px", marginRight: "8px",backgroundColor: "#fff",
-                    color: "#000", }}
+                className="p-2 mr-2 bg-black text-white" 
             />
-            <button className={styles.button} onClick={fetchPackages}>Fetch</button>
+            <button className="w-full px-3 py-3 bg-blue-500 text-white font-bold border-0 rounded-md cursor-pointer transition duration-200 hover:bg-blue-600" onClick={fetchPackages}>Fetch</button>
 
             {data && (
                 <>
                     <h3>Outgoing</h3>
-                    {data.outgoing.map((p: any, i: number) => (
-                        <div
+                    {data.outgoing.map((p: Package, i: number) => (
+                        <div className="border border-[#ccc] p-2 mb-1.5 rounded-md bg-white text-black"
                             key={i}
-                            style={{
-                                border: "1px solid #ccc",
-                                padding: "8px",
-                                marginBottom: "6px",
-                                borderRadius: "6px",
-                                backgroundColor: "#fff",
-                                color: "#000",
-                            }}
+                       
                         >
-                            <p><strong>From:</strong> {p.senderName} ({p.senderZipCode})</p>
+                            <p><strong>From:</strong> {p.senderName}({p.senderZipCode})</p>
                             <p><strong>To:</strong> {p.recipientName} ({p.recipientZipCode})</p>
                         </div>
                     ))}
 
-                    <h3>Incoming</h3>
-                    {data.incoming.map((p: any, i: number) => (
-                        <div
+                    <h3 >Incoming</h3>
+                    {data.incoming.map((p: Package, i: number) => (
+                        <div className="border border-[#ccc] p-2 mb-1.5 rounded-md bg-white text-black"
                             key={i}
-                            style={{
-                                border: "1px solid #ccc",
-                                padding: "8px",
-                                marginBottom: "6px",
-                                borderRadius: "6px",
-                                backgroundColor: "#fff",
-                                color: "#000",
-                            }}
                         >
                             <p><strong>From:</strong> {p.senderName} ({p.senderZipCode})</p>
                             <p><strong>To:</strong> {p.recipientName} ({p.recipientZipCode})</p>

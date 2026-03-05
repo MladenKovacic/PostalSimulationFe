@@ -1,12 +1,21 @@
 ﻿"use client";
-import { useEffect, useState } from "react";
-import styles from "./Sidebar.module.css";
+import {useEffect, useState} from "react";
+
+interface OfficeInfo {
+    street: string;
+    city: string;
+    zipCode: string;
+
+}
+
 
 export default function PostalOfficeView() {
-    const [offices, setOffices] = useState<any[]>([]);
+    const [offices, setOffices] = useState<OfficeInfo[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/getall/postaloffices")
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        fetch(`${apiUrl}/getall/postaloffices`)
             .then((res) => res.json())
             .then((data) => setOffices(data))
             .catch(console.error);
@@ -16,16 +25,8 @@ export default function PostalOfficeView() {
         <div>
             <h2>Postal Offices</h2>
             {offices.map((office, index) => (
-                <div
-                    key={index}
-                    style={{
-                        border: "1px solid #ccc",
-                        padding: "12px",
-                        marginBottom: "10px",
-                        borderRadius: "8px",
-                        backgroundColor: "#fff",
-                        color: "#000",
-                    }}
+                <div className="border border-[#ccc] p-2 mb-2.5 rounded-md bg-white text-black"
+                     key={index}
                 >
                     <p><strong>Street:</strong> {office.street}</p>
                     <p><strong>City:</strong> {office.city}</p>
